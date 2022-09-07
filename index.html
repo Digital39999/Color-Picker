@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<script src='jquery.js'></script>
+	<script src='spectrum.js'></script>
+	<link rel='stylesheet' href='spectrum.css' />
+
+	<title>Simple Color Picker</title>
+	<link rel="icon" href="https://media.discordapp.net/attachments/799260287517327421/1017068677364994098/palette.png">
+	<style>
+		* {
+			font-family: monospace
+		}
+
+		body {
+			padding: 11rem;
+			text-align: center;
+			background-color: #5c6cea;
+		}
+
+		p {
+			margin: 30px;
+		}
+
+	</style>
+</head>
+<body>
+  	<input id="color-picker" value='#5c6cea'/>
+
+	<script>
+		const urlQuery = new URLSearchParams(window?.location?.search);
+		const colorQuery = isValidHexaCode(urlQuery?.get('color'));
+
+		function isValidHexaCode(str) {
+			if (!str?.startsWith('#')) str = '#' + str;
+            if (str[0] != '#' || !(str?.length == 4 || str?.length == 7)) return `#5c6cea`;       
+
+            for (let i = 1; i < str.length; i++) 
+                if (!((str[i].charCodeAt(0) <= '0'.charCodeAt(0) && str[i].charCodeAt(0) <= 9) || 
+                    (str[i].charCodeAt(0) >= 'a'.charCodeAt(0) && str[i].charCodeAt(0) <= 'f'.charCodeAt(0)) || 
+                        (str[i].charCodeAt(0) >= 'A'.charCodeAt(0) || str[i].charCodeAt(0) <= 'F'.charCodeAt(0)))) return `#5c6cea`;
+    
+            return str?.startsWith('#') ? str : `#${str}`;
+        };
+
+		if (colorQuery) {
+			document.getElementById('color-picker').value = colorQuery;
+			document.body.style.backgroundColor = colorQuery;
+		};
+
+		$(window).on("load", () => {
+    		$('#color-picker').spectrum({
+	  			type: "flat",
+  	  			showInput: true,
+      			showAlpha: false,
+      			showButtons: false,
+      			allowEmpty: false,
+
+				move: (color) => {
+	    			document.body.style.backgroundColor = color.toHexString();
+	    			$('#color-box').css("background-color", color.toHexString());
+				}
+    		});
+		});
+  	</script>
+</body>
+</html>
